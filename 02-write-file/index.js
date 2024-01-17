@@ -1,10 +1,18 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { stdout } = require('node:process');
+const { stdout, stdin } = require('node:process');
+const readline = require('node:readline/promises');
 
 const fileName = 'text.txt';
-const welcomeMessage = 'Hi, student';
+const welcomeMessage = 'Hi, student \n';
 
 const writableStream = fs.createWriteStream(path.join(__dirname, fileName));
+const rl = readline.createInterface({ input: stdin, output: writableStream });
+
+const handleReadLine = (line) => {
+  rl.output.write(line + '\n');
+};
 
 writableStream.on('open', () => stdout.write(welcomeMessage));
+
+rl.on('line', handleReadLine);
