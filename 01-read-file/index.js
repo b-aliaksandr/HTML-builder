@@ -4,5 +4,11 @@ const { stdout } = require('node:process');
 
 const fileName = 'text.txt';
 
-const readStream = fs.createReadStream(path.join(__dirname, fileName));
-readStream.on('data', (chunk) => stdout.write(chunk));
+const main = async () => {
+  const readableStream = fs.createReadStream(path.join(__dirname, fileName), 'utf-8');
+  for await (const chunk of readableStream) {
+    stdout.write(chunk);
+  }
+};
+
+main().catch(console.error);
