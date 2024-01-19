@@ -9,22 +9,22 @@ const fileName = 'text.txt';
 const welcomeMessage = 'Hi, student \n';
 const farewellMessage = 'Bye';
 
-const writableStream = fs.createWriteStream(path.join(__dirname, fileName));
-const rl = readline.createInterface({ input: stdin, output: writableStream });
-
-const handleReadLine = (line) => {
-  if (line === EXIT_PHRASE) {
-    process.emit('SIGINT');
-  }
-  rl.output.write(line + '\n');
-};
-
 const handleExit = () => {
   stdout.write(farewellMessage);
   process.kill(process.pid, 'SIGINT');
 };
 
-writableStream.on('open', () => stdout.write(welcomeMessage));
+const handleReadLine = (line) => {
+  if (line === EXIT_PHRASE) {
+    handleExit();
+  }
+  rl.output.write(line.concat('\n'));
+};
 
-rl.on('line', handleReadLine);
 process.on('SIGINT', handleExit);
+
+const writableStream = fs.createWriteStream(path.join(__dirname, fileName), 'utf-8');
+const rl = readline.createInterface({ input: stdin, output: writableStream });
+
+stdout.write(welcomeMessage);
+rl.on('line', handleReadLine);
