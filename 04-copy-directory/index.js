@@ -3,13 +3,22 @@ const path = require('path');
 
 const FOLDER_NAME = 'files';
 
+async function createOrRecreateDir(folderPath) {
+  try {
+    await fs.mkdir(folderPath);
+  } catch (err) {
+    await fs.rm(folderPath, { recursive: true, force: true });
+    await fs.mkdir(folderPath);
+  }
+}
+
 async function copyDir(basePath, dirName) {
   const POSTFIX_NAME = 'copy';
   const copyDirName = dirName.concat('-', POSTFIX_NAME);
   const copyDirPath = path.join(basePath, copyDirName);
   const baseDirPath = path.join(basePath, dirName);
 
-  await fs.mkdir(copyDirPath, { recursive: true });
+  await createOrRecreateDir(copyDirPath);
 
   const dirContent = await fs.readdir(baseDirPath, { withFileTypes: true });
 
