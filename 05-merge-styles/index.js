@@ -1,5 +1,5 @@
 const path = require('node:path');
-const fs = require('fs/promises');
+const fs = require('node:fs/promises');
 
 const PROJECT_PATH = __dirname;
 const DIST_DIR_NAME = 'project-dist';
