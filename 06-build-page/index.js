@@ -2,12 +2,16 @@ const path = require('node:path');
 const fs = require('node:fs');
 
 const { createOrRecreateDir, copyDir } = require('../04-copy-directory/utils.js');
+const { createBundleByExt } = require('../05-merge-styles/utils.js');
 
 const PROJECT_PATH = __dirname;
 const DIST_DIR_NAME = 'project-dist';
 const DIST_DIR_PATH = path.join(PROJECT_PATH, DIST_DIR_NAME);
 const COMPONENTS_DIR_PATH = path.join(PROJECT_PATH, 'components');
 const ASSETS_DIR_NAME = 'assets';
+const STYLES_DIR_NAME = 'styles';
+const CSS_EXT = '.css';
+const OUTPUT_CSS_FILE_NAME = 'style';
 
 const entryPointPath = path.join(PROJECT_PATH, 'template.html');
 const outputPath = path.join(DIST_DIR_PATH, 'index.html');
@@ -65,6 +69,13 @@ const main = async () => {
   await createOrRecreateDir(DIST_DIR_PATH);
   insertComponentsInTemplateHTML();
   copyDir(path.join(PROJECT_PATH, ASSETS_DIR_NAME), path.join(DIST_DIR_PATH, ASSETS_DIR_NAME));
+  createBundleByExt({
+    projectPath: PROJECT_PATH,
+    folderName: STYLES_DIR_NAME,
+    distPath: DIST_DIR_NAME,
+    outputFileName: OUTPUT_CSS_FILE_NAME,
+    ext: CSS_EXT,
+  });
 };
 
 main().catch(console.error);
