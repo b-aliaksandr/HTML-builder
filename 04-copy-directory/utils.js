@@ -21,6 +21,8 @@ async function copyDir(entryDirPath, outputDirPath) {
         path.join(entryDirPath, direntInstance.name),
         path.join(outputDirPath, direntInstance.name)
       );
+    } else if (direntInstance.isDirectory()) {
+      copyDir(path.join(entryDirPath, direntInstance.name), path.join(outputDirPath, direntInstance.name));
     }
   }
 }
