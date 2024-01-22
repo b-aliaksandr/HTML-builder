@@ -11,5 +11,5 @@ createBundleByExt({
   folderName: STYLES_DIR_NAME,
   distPath: DIST_DIR_NAME,
   outputFileName: OUTPUT_FILE_NAME,
-  ext: CSS_EXT
+  ext: CSS_EXT,
 }).catch(console.error);

@@ -23,7 +23,10 @@ const handleReadLine = (line) => {
 
 process.on('SIGINT', handleExit);
 
-const writableStream = fs.createWriteStream(path.join(__dirname, fileName), 'utf-8');
+const writableStream = fs.createWriteStream(
+  path.join(__dirname, fileName),
+  'utf-8',
+);
 const rl = readline.createInterface({ input: stdin, output: writableStream });
 
 stdout.write(welcomeMessage);

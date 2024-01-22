@@ -1,7 +1,10 @@
 const path = require('node:path');
 const fs = require('node:fs');
 
-const { createOrRecreateDir, copyDir } = require('../04-copy-directory/utils.js');
+const {
+  createOrRecreateDir,
+  copyDir,
+} = require('../04-copy-directory/utils.js');
 const { createBundleByExt } = require('../05-merge-styles/utils.js');
 
 const PROJECT_PATH = __dirname;
@@ -33,7 +36,10 @@ const findTagNames = (content) => {
       const tagName = {
         startIndex,
         endIndex,
-        name: content.slice(startIndex + tagSymbolsLen, endIndex - tagSymbolsLen),
+        name: content.slice(
+          startIndex + tagSymbolsLen,
+          endIndex - tagSymbolsLen,
+        ),
       };
       tagNames.push(tagName);
     }
@@ -48,13 +54,19 @@ const insertComponentsInTemplateHTML = async () => {
   const templateHTML = await fs.promises.readFile(entryPointPath, 'utf-8');
   const tagNames = findTagNames(templateHTML);
 
-  const beforeTagNamesContentTagNamesContent = templateHTML.slice(0, tagNames.at(0).startIndex);
+  const beforeTagNamesContentTagNamesContent = templateHTML.slice(
+    0,
+    tagNames.at(0).startIndex,
+  );
   outputHTMLWritableStream.write(beforeTagNamesContentTagNamesContent);
 
   for await (const { name } of tagNames) {
     const fileName = name.concat('.html');
     try {
-      const chunk = await fs.promises.readFile(path.resolve(COMPONENTS_DIR_PATH, fileName), 'utf-8');
+      const chunk = await fs.promises.readFile(
+        path.resolve(COMPONENTS_DIR_PATH, fileName),
+        'utf-8',
+      );
       outputHTMLWritableStream.write(chunk);
     } catch (err) {
       console.error(err);
@@ -68,7 +80,10 @@ const insertComponentsInTemplateHTML = async () => {
 const main = async () => {
   await createOrRecreateDir(DIST_DIR_PATH);
   insertComponentsInTemplateHTML().catch(console.error);
-  copyDir(path.join(PROJECT_PATH, ASSETS_DIR_NAME), path.join(DIST_DIR_PATH, ASSETS_DIR_NAME)).catch(console.error);
+  copyDir(
+    path.join(PROJECT_PATH, ASSETS_DIR_NAME),
+    path.join(DIST_DIR_PATH, ASSETS_DIR_NAME),
+  ).catch(console.error);
   createBundleByExt({
     projectPath: PROJECT_PATH,
     folderName: STYLES_DIR_NAME,

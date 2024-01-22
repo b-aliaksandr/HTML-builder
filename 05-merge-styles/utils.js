@@ -10,18 +10,29 @@ const filterDirFilesByExt = (dirContent, ext) => {
 const readFileContent = (fileName, dirPath) => {
   const filePath = path.resolve(dirPath, fileName);
   return fs.readFile(filePath, 'utf-8');
-}
+};
 
-async function createBundleByExt({ projectPath, folderName, distPath, outputFileName, ext }) {
+async function createBundleByExt({
+  projectPath,
+  folderName,
+  distPath,
+  outputFileName,
+  ext,
+}) {
   const dirPath = path.join(projectPath, folderName);
   const dirContent = await fs.readdir(dirPath, { withFileTypes: true });
 
-  const filesContentData = await filterDirFilesByExt(dirContent, ext)
-    .map(({ name }) => readFileContent(name, dirPath));
+  const filesContentData = await filterDirFilesByExt(dirContent, ext).map(
+    ({ name }) => readFileContent(name, dirPath),
+  );
 
-  await fs.writeFile(path.join(projectPath, distPath, outputFileName.concat(ext)), filesContentData, 'utf-8');
+  await fs.writeFile(
+    path.join(projectPath, distPath, outputFileName.concat(ext)),
+    filesContentData,
+    'utf-8',
+  );
 }
 
 module.exports = {
   createBundleByExt,
-}
+};

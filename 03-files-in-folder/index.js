@@ -8,7 +8,9 @@ const FOLDER_PATH = path.join(__dirname, FOLDER_NAME);
 async function logFileInfoToOutput(direntInstance, output) {
   if (direntInstance.isFile()) {
     const [fileName, fileExt] = direntInstance.name.split('.');
-    const { size: fileSize } = await fs.stat(path.join(direntInstance.path, direntInstance.name));
+    const { size: fileSize } = await fs.stat(
+      path.join(direntInstance.path, direntInstance.name),
+    );
     const fileInfo = `${fileName} - ${fileExt} - ${fileSize}\n`;
     output.write(fileInfo);
   }

@@ -19,10 +19,13 @@ async function copyDir(entryDirPath, outputDirPath) {
     if (direntInstance.isFile()) {
       await fs.copyFile(
         path.join(entryDirPath, direntInstance.name),
-        path.join(outputDirPath, direntInstance.name)
+        path.join(outputDirPath, direntInstance.name),
       );
     } else if (direntInstance.isDirectory()) {
-      copyDir(path.join(entryDirPath, direntInstance.name), path.join(outputDirPath, direntInstance.name));
+      copyDir(
+        path.join(entryDirPath, direntInstance.name),
+        path.join(outputDirPath, direntInstance.name),
+      );
     }
   }
 }
@@ -30,4 +33,4 @@ async function copyDir(entryDirPath, outputDirPath) {
 module.exports = {
   createOrRecreateDir,
   copyDir,
-}
+};
