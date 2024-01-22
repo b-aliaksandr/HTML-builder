@@ -54,14 +54,16 @@ const insertComponentsInTemplateHTML = async () => {
   const templateHTML = await fs.promises.readFile(entryPointPath, 'utf-8');
   const tagNames = findTagNames(templateHTML);
 
-  const beforeTagNamesContentTagNamesContent = templateHTML.slice(
-    0,
-    tagNames.at(0).startIndex,
-  );
-  outputHTMLWritableStream.write(beforeTagNamesContentTagNamesContent);
+  let curIndex = 0;
 
-  for await (const { name } of tagNames) {
+  for await (const { name, startIndex, endIndex } of tagNames) {
     const fileName = name.concat('.html');
+    const beforeTagNamesContent = templateHTML.slice(
+      curIndex,
+      startIndex,
+    );
+    outputHTMLWritableStream.write(beforeTagNamesContent);
+    curIndex = endIndex;
     try {
       const chunk = await fs.promises.readFile(
         path.resolve(COMPONENTS_DIR_PATH, fileName),
@@ -73,7 +75,7 @@ const insertComponentsInTemplateHTML = async () => {
     }
   }
 
-  const afterTagNamesContent = templateHTML.slice(tagNames.at(-1).endIndex);
+  const afterTagNamesContent = templateHTML.slice(curIndex);
   outputHTMLWritableStream.write(afterTagNamesContent);
 };
 
