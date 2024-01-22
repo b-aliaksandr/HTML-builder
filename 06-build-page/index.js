@@ -1,12 +1,6 @@
 const path = require('node:path');
 const fs = require('node:fs');
 
-const {
-  createOrRecreateDir,
-  copyDir,
-} = require('../04-copy-directory/utils.js');
-const { createBundleByExt } = require('../05-merge-styles/utils.js');
-
 const PROJECT_PATH = __dirname;
 const DIST_DIR_NAME = 'project-dist';
 const DIST_DIR_PATH = path.join(PROJECT_PATH, DIST_DIR_NAME);
@@ -57,7 +51,7 @@ const insertComponentsInTemplateHTML = async () => {
   let curIndex = 0;
 
   for await (const { name, startIndex, endIndex } of tagNames) {
-    const fileName = name.concat('.html');
+    const fileName = name.trim().concat('.html');
     const beforeTagNamesContent = templateHTML.slice(
       curIndex,
       startIndex,
@@ -78,6 +72,67 @@ const insertComponentsInTemplateHTML = async () => {
   const afterTagNamesContent = templateHTML.slice(curIndex);
   outputHTMLWritableStream.write(afterTagNamesContent);
 };
+
+async function createOrRecreateDir(folderPath) {
+  try {
+    await fs.promises.mkdir(folderPath);
+  } catch (err) {
+    await fs.promises.rm(folderPath, { recursive: true, force: true });
+    await fs.promises.mkdir(folderPath);
+  }
+}
+
+async function copyDir(entryDirPath, outputDirPath) {
+  await createOrRecreateDir(outputDirPath);
+
+  const dirContent = await fs.promises.readdir(entryDirPath, { withFileTypes: true });
+
+  for (const direntInstance of dirContent) {
+    if (direntInstance.isFile()) {
+      await fs.promises.copyFile(
+        path.join(entryDirPath, direntInstance.name),
+        path.join(outputDirPath, direntInstance.name),
+      );
+    } else if (direntInstance.isDirectory()) {
+      copyDir(
+        path.join(entryDirPath, direntInstance.name),
+        path.join(outputDirPath, direntInstance.name),
+      );
+    }
+  }
+}
+
+const filterDirFilesByExt = (dirContent, ext) => {
+  return dirContent.filter((direntInstance) => {
+    return direntInstance.isFile() && path.extname(direntInstance.name) === ext;
+  });
+};
+
+const readFileContent = (fileName, dirPath) => {
+  const filePath = path.resolve(dirPath, fileName);
+  return fs.promises.readFile(filePath, 'utf-8');
+};
+
+async function createBundleByExt({
+  projectPath,
+  folderName,
+  distPath,
+  outputFileName,
+  ext,
+}) {
+  const dirPath = path.join(projectPath, folderName);
+  const dirContent = await fs.promises.readdir(dirPath, { withFileTypes: true });
+
+  const filesContentData = await filterDirFilesByExt(dirContent, ext).map(
+    ({ name }) => readFileContent(name, dirPath),
+  );
+
+  await fs.promises.writeFile(
+    path.join(projectPath, distPath, outputFileName.concat(ext)),
+    filesContentData,
+    'utf-8',
+  );
+}
 
 const main = async () => {
   await createOrRecreateDir(DIST_DIR_PATH);
