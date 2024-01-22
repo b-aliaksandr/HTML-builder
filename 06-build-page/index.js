@@ -1,12 +1,13 @@
 const path = require('node:path');
 const fs = require('node:fs');
 
-const { createOrRecreateDir } = require('../04-copy-directory/utils.js');
+const { createOrRecreateDir, copyDir } = require('../04-copy-directory/utils.js');
 
 const PROJECT_PATH = __dirname;
 const DIST_DIR_NAME = 'project-dist';
 const DIST_DIR_PATH = path.join(PROJECT_PATH, DIST_DIR_NAME);
 const COMPONENTS_DIR_PATH = path.join(PROJECT_PATH, 'components');
+const ASSETS_DIR_NAME = 'assets';
 
 const entryPointPath = path.join(PROJECT_PATH, 'template.html');
 const outputPath = path.join(DIST_DIR_PATH, 'index.html');
@@ -63,6 +64,7 @@ const insertComponentsInTemplateHTML = async () => {
 const main = async () => {
   await createOrRecreateDir(DIST_DIR_PATH);
   insertComponentsInTemplateHTML();
+  copyDir(path.join(PROJECT_PATH, ASSETS_DIR_NAME), path.join(DIST_DIR_PATH, ASSETS_DIR_NAME));
 };
 
 main().catch(console.error);
