@@ -67,15 +67,15 @@ const insertComponentsInTemplateHTML = async () => {
 
 const main = async () => {
   await createOrRecreateDir(DIST_DIR_PATH);
-  insertComponentsInTemplateHTML();
-  copyDir(path.join(PROJECT_PATH, ASSETS_DIR_NAME), path.join(DIST_DIR_PATH, ASSETS_DIR_NAME));
+  insertComponentsInTemplateHTML().catch(console.error);
+  copyDir(path.join(PROJECT_PATH, ASSETS_DIR_NAME), path.join(DIST_DIR_PATH, ASSETS_DIR_NAME)).catch(console.error);
   createBundleByExt({
     projectPath: PROJECT_PATH,
     folderName: STYLES_DIR_NAME,
     distPath: DIST_DIR_NAME,
     outputFileName: OUTPUT_CSS_FILE_NAME,
     ext: CSS_EXT,
-  });
+  }).catch(console.error);
 };
 
 main().catch(console.error);
