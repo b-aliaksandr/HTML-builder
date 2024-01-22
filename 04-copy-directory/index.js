@@ -1,5 +1,5 @@
-const fs = require('fs/promises');
-const path = require('path');
+const fs = require('node:fs/promises');
+const path = require('node:path');
 const { createOrRecreateDir } = require('./utils');
 
 const FOLDER_NAME = 'files';
