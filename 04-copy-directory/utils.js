@@ -1,5 +1,5 @@
 const fs = require('node:fs/promises');
-const path = require('node:path')
+const path = require('node:path');
 
 async function createOrRecreateDir(folderPath) {
   try {
@@ -10,21 +10,16 @@ async function createOrRecreateDir(folderPath) {
   }
 }
 
-async function copyDir(basePath, dirName) {
-  const POSTFIX_NAME = 'copy';
-  const copyDirName = dirName.concat('-', POSTFIX_NAME);
-  const copyDirPath = path.join(basePath, copyDirName);
-  const baseDirPath = path.join(basePath, dirName);
+async function copyDir(entryDirPath, outputDirPath) {
+  await createOrRecreateDir(outputDirPath);
 
-  await createOrRecreateDir(copyDirPath);
-
-  const dirContent = await fs.readdir(baseDirPath, { withFileTypes: true });
+  const dirContent = await fs.readdir(entryDirPath, { withFileTypes: true });
 
   for (const direntInstance of dirContent) {
     if (direntInstance.isFile()) {
       await fs.copyFile(
-        path.join(baseDirPath, direntInstance.name),
-        path.join(copyDirPath, direntInstance.name)
+        path.join(entryDirPath, direntInstance.name),
+        path.join(outputDirPath, direntInstance.name)
       );
     }
   }
